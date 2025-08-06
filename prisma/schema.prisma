@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
   output   = "../generated/prisma"
@@ -11,19 +8,83 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  posts Post[]
+  id           String   @id @default(uuid())
+  name         String?
+  profileImage String?
+  phone        String
+  bio          String?
+  role         Role
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  isDeleted    Boolean  @default(false)
+
+  donorDetails  DonorDetail[]
+  bloodRequests BloodRequest[] @relation("UserRequests")
+
+  @@map("users")
 }
 
-model Post {
-  id        Int     @id @default(autoincrement())
+model Admin {
+  id           String   @id @default(uuid())
+  name         String?
+  profileImage String?
+  bio          String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  isDeleted    Boolean  @default(false)
+
+  @@map("admins")
+}
+
+model DonorDetail {
+  id               String    @id @default(uuid())
+  userId           String
+  user             User      @relation(fields: [userId], references: [id])
+  bloodType        BloodType
+  location         String
+  lastDonationDate DateTime  @default(now())
+}
+
+model BloodRequest {
+  id          String    @id @default(uuid())
+  requesterId String
+  requester   User      @relation("UserRequests", fields: [requesterId], references: [id])
+  bloodType   BloodType
+  location    String
+  urgency     Status
+  status      Status
+  createdAt   DateTime  @default(now())
+}
+
+model Event {
+  id        String   @id @default(uuid())
   title     String
-  content   String?
-  published Boolean @default(false)
-  author    User    @relation(fields: [authorId], references: [id])
-  authorId  Int
+  date      DateTime
+  location  String
+  organizer String
+  createdAt DateTime @default(now())
+}
+
+enum Role {
+  DONOR
+  RECIPIENT
+  ADMIN
+}
+
+enum Status {
+  PENDING
+  APPROVED
+  FULFILLED
+}
+
+enum BloodType {
+  O_POS
+  O_NEG
+  A_POS
+  A_NEG
+  AB_POS
+  AB_NEG
+  B_POS
+  B_NEG
 }

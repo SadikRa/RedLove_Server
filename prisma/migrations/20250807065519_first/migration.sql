@@ -4,6 +4,7 @@ CREATE TABLE "users" (
     "name" TEXT,
     "profileImage" TEXT,
     "phone" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
     "bio" TEXT,
     "role" TEXT NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -17,6 +18,8 @@ CREATE TABLE "admins" (
     "name" TEXT,
     "profileImage" TEXT,
     "bio" TEXT,
+    "phone" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,
     "isDeleted" BOOLEAN NOT NULL DEFAULT false

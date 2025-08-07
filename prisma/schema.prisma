@@ -44,6 +44,8 @@ model DonorDetail {
   bloodType        BloodType
   location         String
   lastDonationDate DateTime  @default(now())
+
+  @@map("donorDetail")
 }
 
 model BloodRequest {
@@ -55,6 +57,8 @@ model BloodRequest {
   urgency     Status
   status      Status
   createdAt   DateTime  @default(now())
+
+  @@map("bloodRequest")
 }
 
 model Event {
@@ -64,6 +68,8 @@ model Event {
   location  String
   organizer String
   createdAt DateTime @default(now())
+
+  @@map("event")
 }
 
 enum Role {

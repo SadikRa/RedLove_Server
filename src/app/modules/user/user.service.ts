@@ -29,7 +29,7 @@ const registerUser = async (payload: IUserPayload) => {
   }
 
   const isAccountExists = await prisma.user.findUnique({
-    where: { email }, // ✅ email must be unique
+    where: { email },
   });
 
   if (isAccountExists) {

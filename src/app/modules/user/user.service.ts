@@ -53,7 +53,6 @@ const registerUser = async (payload: IUserPayload) => {
   return createdUser;
 };
 
-
 export const userService = {
   registerUser,
 };

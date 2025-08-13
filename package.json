@@ -37,6 +37,6 @@
     "http-status": "^2.1.0",
     "jsonwebtoken": "^9.0.2",
     "nodemailer": "^7.0.5",
-    "zod": "^4.0.15"
+    "zod": "^4.0.17"
   }
 }

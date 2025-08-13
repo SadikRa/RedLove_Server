@@ -9,20 +9,26 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(uuid())
+  id           String     @id @default(uuid())
   name         String?
   profileImage String?
-  phone        String
-  email        String   @unique
+  phone        String     @unique
+  email        String     @unique
   password     String
   bio          String?
   role         Role
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  isDeleted    Boolean  @default(false)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  bloodType    BloodType?
+  location     String?
+  isVerified   Boolean    @default(false)
+  lastActive   DateTime?
+  isDeleted    Boolean    @default(false)
 
   donorDetails  DonorDetail[]
   bloodRequests BloodRequest[] @relation("UserRequests")
+  Donation      Donation[]
+  Notification  Notification[]
 
   @@map("users")
 }
@@ -47,6 +53,10 @@ model DonorDetail {
   userId           String
   user             User      @relation(fields: [userId], references: [id])
   bloodType        BloodType
+  healthInfo       String?
+  donationCount    Int       @default(0)
+  availability     Boolean   @default(true)
+  canTravel        Boolean   @default(false)
   location         String
   lastDonationDate DateTime  @default(now())
 
@@ -54,16 +64,33 @@ model DonorDetail {
 }
 
 model BloodRequest {
-  id          String    @id @default(uuid())
-  requesterId String
-  requester   User      @relation("UserRequests", fields: [requesterId], references: [id])
-  bloodType   BloodType
-  location    String
-  urgency     Status
-  status      Status
-  createdAt   DateTime  @default(now())
+  id            String    @id @default(uuid())
+  requesterId   String
+  requester     User      @relation("UserRequests", fields: [requesterId], references: [id])
+  bloodType     BloodType
+  location      String
+  urgency       Status
+  status        Status
+  patientName   String
+  hospital      String?
+  unitsNeeded   Int       @default(1)
+  caseDetails   String?
+  contactPerson String
+  createdAt     DateTime  @default(now())
 
   @@map("bloodRequest")
+}
+
+model Donation {
+  id        String   @id @default(uuid())
+  donorId   String
+  donor     User     @relation(fields: [donorId], references: [id])
+  requestId String?
+  date      DateTime @default(now())
+  location  String
+  verified  Boolean  @default(false)
+
+  @@map("donation")
 }
 
 model Community {
@@ -77,14 +104,27 @@ model Community {
 }
 
 model Event {
-  id        String   @id @default(uuid())
-  title     String
-  date      DateTime
-  location  String
-  organizer String
-  createdAt DateTime @default(now())
+  id          String    @id @default(uuid())
+  title       String
+  description String?
+  startDate   DateTime
+  endDate     DateTime?
+  organizer   String
+  maxDonors   Int?
+  location    String
+  createdAt   DateTime  @default(now())
 
   @@map("event")
+}
+
+model Notification {
+  id        String       @id @default(uuid())
+  userId    String
+  user      User         @relation(fields: [userId], references: [id])
+  type      UrgencyLevel
+  message   String
+  read      Boolean      @default(false)
+  createdAt DateTime     @default(now())
 }
 
 enum Role {
@@ -108,4 +148,11 @@ enum BloodType {
   AB_NEG
   B_POS
   B_NEG
+}
+
+enum UrgencyLevel {
+  LOW // Needed within weeks
+  MEDIUM // Needed within days
+  HIGH // Needed within 24h
+  CRITICAL // Needed immediately
 }

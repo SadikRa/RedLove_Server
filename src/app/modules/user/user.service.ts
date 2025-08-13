@@ -53,6 +53,28 @@ const registerUser = async (payload: IUserPayload) => {
   return createdUser;
 };
 
+const getUsers = async () => {
+  return prisma.user.findMany({
+    orderBy: { createdAt: "desc" },
+  });
+};
+
+const deleteUser = async (id: string) => {
+  const isUserExist = await prisma.user.findUnique({
+    where: { id },
+  });
+
+  if (!isUserExist) {
+    throw new AppError(httpStatus.NOT_FOUND, "User not found.");
+  }
+
+  return prisma.user.delete({
+    where: { id },
+  });
+};
+
 export const userService = {
   registerUser,
+  getUsers,
+  deleteUser,
 };

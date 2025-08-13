@@ -66,6 +66,16 @@ model BloodRequest {
   @@map("bloodRequest")
 }
 
+model Community {
+  id        String   @id @default(uuid())
+  name      String
+  message   String
+  email     String
+  createdAt DateTime @default(now())
+
+  @@map("community")
+}
+
 model Event {
   id        String   @id @default(uuid())
   title     String

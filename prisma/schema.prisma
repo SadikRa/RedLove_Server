@@ -51,16 +51,17 @@ model Admin {
 model DonorDetail {
   id               String    @id @default(uuid())
   userId           String
-  user             User      @relation(fields: [userId], references: [id])
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   bloodType        BloodType
   healthInfo       String?
   donationCount    Int       @default(0)
   availability     Boolean   @default(true)
   canTravel        Boolean   @default(false)
   location         String
-  lastDonationDate DateTime  @default(now())
+  lastDonationDate DateTime?
 
-  @@map("donorDetail")
+  @@unique([userId])
+  @@map("donor_details")
 }
 
 model BloodRequest {
@@ -78,7 +79,7 @@ model BloodRequest {
   contactPerson String
   createdAt     DateTime  @default(now())
 
-  @@map("bloodRequest")
+  @@map("blood_request")
 }
 
 model Donation {

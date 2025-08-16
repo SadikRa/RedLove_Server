@@ -14,4 +14,16 @@ router.post(
   donorController.createDonor
 );
 
+router.get(
+  "/",
+  auth(Role.DONOR, Role.ADMIN, Role.RECIPIENT),
+  donorController.getDonor 
+);
+
+router.get(
+  "/",
+  auth(Role.DONOR, Role.ADMIN),
+  donorController.deleteDonor 
+);
+
 export const donorRouter = router;

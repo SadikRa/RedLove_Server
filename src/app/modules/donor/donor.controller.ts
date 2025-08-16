@@ -17,7 +17,7 @@ const createDonor = catchAsync(async (req: Request, res: Response) => {
 
 const getDonor = catchAsync(async (req: Request, res: Response) => {
   const { userId } = req.params;
-  const result = await donorService.getDonor(userId);
+  const result = await donorService.getDonor(userId as string);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -29,7 +29,7 @@ const getDonor = catchAsync(async (req: Request, res: Response) => {
 
 const deleteDonor = catchAsync(async (req: Request, res: Response) => {
   const { userId } = req.params;
-  const result = await donorService.deleteDonor(userId);
+  const result = await donorService.deleteDonor(userId as string);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

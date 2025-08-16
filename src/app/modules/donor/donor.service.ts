@@ -14,39 +14,23 @@ interface ICreateDonor {
 }
 
 const createDonor = async (data: ICreateDonor) => {
-  console.log(data);
   const { userId } = data;
 
-  // Transaction for data consistency
   return await prisma.$transaction(async (tx) => {
-    // Check user exists and is not deleted
     const user = await tx.user.findUnique({
-      where: {
-        id: userId,
-        isDeleted: false,
-      },
+      where: { id: userId, isDeleted: false },
     });
 
     if (!user) {
-      throw new AppError(
-        httpStatus.NOT_FOUND,
-        "User not found or account is deleted"
-      );
+      throw new AppError(httpStatus.NOT_FOUND, "User not found or account is deleted");
     }
 
-    // Check if donor profile already exists
-    const existingDonor = await tx.donorDetail.findUnique({
-      where: { userId },
-    });
+    const existingDonor = await tx.donorDetail.findUnique({ where: { userId } });
 
     if (existingDonor) {
-      throw new AppError(
-        httpStatus.CONFLICT,
-        "Donor profile already exists for this user"
-      );
+      throw new AppError(httpStatus.CONFLICT, "Donor profile already exists for this user");
     }
 
-    // Create donor profile
     return await tx.donorDetail.create({
       data: {
         userId,
@@ -55,14 +39,39 @@ const createDonor = async (data: ICreateDonor) => {
         availability: data.availability ?? true,
         canTravel: data.canTravel ?? false,
         location: data.location,
-        lastDonationDate: data.lastDonationDate
-          ? new Date(data.lastDonationDate) // ✅ Convert string to Date
-          : null,
+        lastDonationDate: data.lastDonationDate ? new Date(data.lastDonationDate) : null,
       },
     });
   });
 };
 
+const getDonor = async (userId: string) => {
+  const donor = await prisma.donorDetail.findUnique({
+    where: { userId },
+    include: { user: true }, // ✅ if you want user info also
+  });
+
+  if (!donor) {
+    throw new AppError(httpStatus.NOT_FOUND, "Donor profile not found");
+  }
+
+  return donor;
+};
+
+const deleteDonor = async (userId: string) => {
+  const donor = await prisma.donorDetail.findUnique({ where: { userId } });
+
+  if (!donor) {
+    throw new AppError(httpStatus.NOT_FOUND, "Donor profile not found");
+  }
+
+  await prisma.donorDetail.delete({ where: { userId } });
+
+  return { message: "Donor profile deleted successfully" };
+};
+
 export const donorService = {
   createDonor,
+  getDonor,
+  deleteDonor,
 };

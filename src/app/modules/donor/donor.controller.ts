@@ -1,10 +1,10 @@
-import httpStatus from "http-status";
+import { Request, Response } from "express";
 import catchAsync from "../../../shared/catchAsync";
 import sendResponse from "../../../shared/sendResponse";
+import httpStatus from "http-status";
 import { donorService } from "./donor.service";
 
-const createDonor = catchAsync(async (req, res) => {
-  console.log(req.body);
+const createDonor = catchAsync(async (req: Request, res: Response) => {
   const result = await donorService.createDonor(req.body);
 
   sendResponse(res, {
@@ -15,6 +15,32 @@ const createDonor = catchAsync(async (req, res) => {
   });
 });
 
+const getDonor = catchAsync(async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  const result = await donorService.getDonor(userId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Donor profile fetched successfully",
+    data: result,
+  });
+});
+
+const deleteDonor = catchAsync(async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  const result = await donorService.deleteDonor(userId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: result.message,
+    data: result
+  });
+});
+
 export const donorController = {
   createDonor,
+  getDonor,
+  deleteDonor,
 };

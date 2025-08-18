@@ -68,6 +68,18 @@ const getRequests = async () => {
   });
 };
 
+const getARequest = async (id: string) => {
+  const request = await prisma.bloodRequest.findUnique({
+    where: { id },
+    include: { requester: true },
+  });
+
+  if (!request) {
+    throw new AppError(httpStatus.NOT_FOUND, "Request not found");
+  }
+
+  return request;
+};
 
 
 export const requestService = {

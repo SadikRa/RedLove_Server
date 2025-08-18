@@ -16,8 +16,19 @@ const createDonor = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getDonor = catchAsync(async (req: Request, res: Response) => {
+  const result = await donorService.getDonor();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Donor profile fetched successfully",
+    data: result,
+  });
+});
+
+const getADonor = catchAsync(async (req: Request, res: Response) => {
   const { userId } = req.params;
-  const result = await donorService.getDonor(userId as string);
+  const result = await donorService.getADonor(userId as string);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -35,12 +46,13 @@ const deleteDonor = catchAsync(async (req: Request, res: Response) => {
     statusCode: httpStatus.OK,
     success: true,
     message: result.message,
-    data: result
+    data: result,
   });
 });
 
 export const donorController = {
   createDonor,
+  getADonor,
   getDonor,
   deleteDonor,
 };

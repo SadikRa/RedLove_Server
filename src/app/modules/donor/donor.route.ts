@@ -21,6 +21,12 @@ router.get(
 );
 
 router.get(
+  "/:id",
+  auth(Role.DONOR, Role.ADMIN, Role.RECIPIENT),
+  donorController.getADonor 
+);
+
+router.get(
   "/",
   auth(Role.DONOR, Role.ADMIN),
   donorController.deleteDonor 

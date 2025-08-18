@@ -11,10 +11,11 @@ interface IUserPayload {
   phone: string;
   profileImage?: string;
   bio?: string;
+  role: Role;
 }
 
 const registerUser = async (payload: IUserPayload) => {
-  const { name, email, password, phone, profileImage, bio } = payload;
+  const { name, email, password, phone, profileImage, bio, role } = payload;
 
   if (!email || !password || !phone) {
     throw new AppError(
@@ -46,7 +47,7 @@ const registerUser = async (payload: IUserPayload) => {
       phone,
       profileImage: profileImage ?? null,
       bio: bio ?? null,
-      role: Role.DONOR,
+      role: role,
     },
   });
 

@@ -3,6 +3,7 @@ import { userRouter } from "../modules/user/user.route";
 import { authRouter } from "../modules/auth/auth.route";
 import { communityRouter } from "../modules/community/community.router";
 import { donorRouter } from "../modules/donor/donor.route";
+import { requestRouter } from "../modules/request/request.route";
 
 const router = express.Router();
 
@@ -22,6 +23,10 @@ const moduleRoutes = [
   {
     path: "/donor",
     route: donorRouter,
+  },
+  {
+    path: "/request",
+    route: requestRouter,
   },
 ];
 

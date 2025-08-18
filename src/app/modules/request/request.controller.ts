@@ -15,6 +15,44 @@ const createRequest = catchAsync(async (req, res) => {
   });
 });
 
+const getRequests = catchAsync(async (req, res) => {
+  const result = await requestService.getRequests();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "request profile fetched successfully",
+    data: result,
+  });
+});
+
+const getARequest = catchAsync(async (req, res) => {
+  const { userId } = req.params;
+  const result = await requestService.getARequest(userId as string);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "request profile fetched successfully",
+    data: result,
+  });
+});
+
+const deleteRequest = catchAsync(async (req, res) => {
+  const { userId } = req.params;
+  const result = await requestService.deleteRequest(userId as string);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: result.message,
+    data: result,
+  });
+});
+
 export const requestController = {
   createRequest,
+  getRequests,
+  getARequest,
+  deleteRequest,
 };

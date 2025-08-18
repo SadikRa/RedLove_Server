@@ -14,4 +14,23 @@ router.post(
   requestController.createRequest
 );
 
+router.get(
+  "/",
+  auth(Role.DONOR, Role.ADMIN, Role.RECIPIENT),
+  requestController.getRequests
+);
+
+router.get(
+  "/:id",
+  auth(Role.DONOR, Role.ADMIN, Role.RECIPIENT),
+  requestController.getARequest
+);
+
+
+router.delete(
+  "/:id",
+  auth(Role.DONOR, Role.ADMIN),
+  requestController.deleteRequest
+);
+
 export const requestRouter = router;

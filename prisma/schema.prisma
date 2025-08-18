@@ -65,21 +65,24 @@ model DonorDetail {
 }
 
 model BloodRequest {
-  id            String    @id @default(uuid())
+  id            String       @id @default(uuid())
   requesterId   String
-  requester     User      @relation("UserRequests", fields: [requesterId], references: [id])
+  requester     User         @relation("UserRequests", fields: [requesterId], references: [id], onDelete: Cascade)
   bloodType     BloodType
   location      String
-  urgency       Status
-  status        Status
+  urgency       UrgencyLevel
+  status        Status       @default(PENDING)
   patientName   String
   hospital      String?
-  unitsNeeded   Int       @default(1)
+  unitsNeeded   Int          @default(1)
   caseDetails   String?
   contactPerson String
-  createdAt     DateTime  @default(now())
+  createdAt     DateTime     @default(now())
 
-  @@map("blood_request")
+  @@index([bloodType])
+  @@index([urgency])
+  @@index([status])
+  @@map("blood_requests")
 }
 
 model Donation {

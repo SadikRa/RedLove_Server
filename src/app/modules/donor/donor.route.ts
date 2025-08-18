@@ -17,19 +17,19 @@ router.post(
 router.get(
   "/",
   auth(Role.DONOR, Role.ADMIN, Role.RECIPIENT),
-  donorController.getDonor 
+  donorController.getDonor
 );
 
 router.get(
   "/:id",
   auth(Role.DONOR, Role.ADMIN, Role.RECIPIENT),
-  donorController.getADonor 
+  donorController.getADonor
 );
 
-router.get(
-  "/",
+router.delete(
+  "/:id",
   auth(Role.DONOR, Role.ADMIN),
-  donorController.deleteDonor 
+  donorController.deleteDonor
 );
 
 export const donorRouter = router;

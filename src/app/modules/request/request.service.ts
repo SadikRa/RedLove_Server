@@ -81,6 +81,17 @@ const getARequest = async (id: string) => {
   return request;
 };
 
+const deleteRequest = async (id: string) => {
+  const request = await prisma.bloodRequest.findUnique({ where: { id } });
+
+  if (!request) {
+    throw new AppError(httpStatus.NOT_FOUND, "Request not found");
+  }
+
+  await prisma.bloodRequest.delete({ where: { id } });
+
+  return { message: "Request deleted successfully" };
+};
 
 export const requestService = {
   createRequest,

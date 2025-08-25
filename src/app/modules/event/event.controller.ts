@@ -1,10 +1,11 @@
 import httpStatus from "http-status";
 import catchAsync from "../../../shared/catchAsync";
 import sendResponse from "../../../shared/sendResponse";
+import { eventServices } from "./event.service";
 
 const createEvent = catchAsync(async (req, res) => {
   const { id } = req.params;
-  const result = await eventServices.deleteevent(id as string);
+  const result = await eventServices.createEvent(id as string);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -52,4 +53,7 @@ const deleteevent = catchAsync(async (req, res) => {
 
 export const eventController = {
   createEvent,
+  getevents,
+  getAevent,
+  deleteevent
 };

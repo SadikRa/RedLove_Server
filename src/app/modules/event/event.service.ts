@@ -1,94 +1,68 @@
 import httpStatus from "http-status";
 import AppError from "../../errors/AppError";
 import prisma from "../../../shared/prisma";
-import { BloodType } from "../../../../generated/prisma";
 
+interface ICreateEvent {
+  title: string;
+  description?: string;
+  startDate: Date;
+  endDate?: Date;
+  organizer: string;
+  maxDonors?: number;
+  location: string;
+}
 
-
-const createEvent = async (data: ) => {
-  const { userId } = data;
-
-  return await prisma.$transaction(async (tx) => {
-    const user = await tx.user.findUnique({
-      where: { id: userId, isDeleted: false },
-    });
-
-    if (!user) {
-      throw new AppError(
-        httpStatus.NOT_FOUND,
-        "User not found or account is deleted"
-      );
-    }
-
-    const existingDonor = await tx.donorDetail.findUnique({
-      where: { userId },
-    });
-
-    if (existingDonor) {
-      throw new AppError(
-        httpStatus.CONFLICT,
-        "Donor profile already exists for this user"
-      );
-    }
-
-    return await tx.donorDetail.create({
-      data: {
-        userId,
-        bloodType: data.bloodType,
-        healthInfo: data.healthInfo || null,
-        availability: data.availability ?? true,
-        canTravel: data.canTravel ?? false,
-        location: data.location,
-        lastDonationDate: data.lastDonationDate
-          ? new Date(data.lastDonationDate)
-          : null,
-      },
-    });
+const createEvent = async (data: ICreateEvent) => {
+    
+  return await prisma.event.create({
+    data: {
+      title: data.title,
+      description: data.description,
+      startDate: data.startDate,
+      endDate: data.endDate,
+      organizer: data.organizer,
+      maxDonors: data.maxDonors,
+      location: data.location,
+    },
   });
 };
 
-const getevents = async () => {
-  const donor = await prisma.donorDetail.findMany({
+const getEvents = async () => {
+  const events = await prisma.event.findMany({
     where: {},
-    include: { user: true },
+    orderBy: { createdAt: 'desc' },
   });
 
-  if (!donor) {
-    throw new AppError(httpStatus.NOT_FOUND, "Donor profile not found");
-  }
-
-  return donor;
+  return events;
 };
 
-const getAevent = async (userId: string) => {
-  const donor = await prisma.donorDetail.findUnique({
-    where: { userId },
-    include: { user: true }, // ✅ if you want user info also
+const getEvent = async (id: string) => {
+  const event = await prisma.event.findUnique({
+    where: { id },
   });
 
-  if (!donor) {
-    throw new AppError(httpStatus.NOT_FOUND, "Donor profile not found");
+  if (!event) {
+    throw new AppError(httpStatus.NOT_FOUND, "Event not found");
   }
 
-  return donor;
+  return event;
 };
 
-const deleteevent = async (userId: string) => {
-  const donor = await prisma.donorDetail.findUnique({ where: { userId } });
+const deleteEvent = async (id: string) => {
+  const event = await prisma.event.findUnique({ where: { id } });
 
-  if (!donor) {
-    throw new AppError(httpStatus.NOT_FOUND, "Donor profile not found");
+  if (!event) {
+    throw new AppError(httpStatus.NOT_FOUND, "Event not found");
   }
 
-  await prisma.donorDetail.delete({ where: { userId } });
+  await prisma.event.delete({ where: { id } });
 
-  return { message: "Donor profile deleted successfully" };
+  return { message: "Event deleted successfully" };
 };
-
 
 export const eventServices = {
- createEvent,
-  getevents,
-  getAevent,
-  deleteevent
+  createEvent,
+  getEvents,
+  getEvent,
+  deleteEvent,
 };

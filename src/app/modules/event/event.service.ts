@@ -47,6 +47,44 @@ const createEvent = async (data: ) => {
   });
 };
 
+const getevents = async () => {
+  const donor = await prisma.donorDetail.findMany({
+    where: {},
+    include: { user: true },
+  });
+
+  if (!donor) {
+    throw new AppError(httpStatus.NOT_FOUND, "Donor profile not found");
+  }
+
+  return donor;
+};
+
+const getAevent = async (userId: string) => {
+  const donor = await prisma.donorDetail.findUnique({
+    where: { userId },
+    include: { user: true }, // ✅ if you want user info also
+  });
+
+  if (!donor) {
+    throw new AppError(httpStatus.NOT_FOUND, "Donor profile not found");
+  }
+
+  return donor;
+};
+
+const deleteevent = async (userId: string) => {
+  const donor = await prisma.donorDetail.findUnique({ where: { userId } });
+
+  if (!donor) {
+    throw new AppError(httpStatus.NOT_FOUND, "Donor profile not found");
+  }
+
+  await prisma.donorDetail.delete({ where: { userId } });
+
+  return { message: "Donor profile deleted successfully" };
+};
+
 
 export const eventServices = {
  createEvent,

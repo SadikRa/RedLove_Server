@@ -10,19 +10,19 @@ router.post("/", eventController.createEvent);
 router.get(
   "/",
   auth(Role.DONOR, Role.ADMIN, Role.RECIPIENT),
-  eventController.getevents
+  eventController.getEvents
 );
 
 router.get(
   "/:id",
   auth(Role.DONOR, Role.ADMIN, Role.RECIPIENT),
-  eventController.getAevent
+  eventController.getEvent
 );
 
 router.delete(
   "/:id",
   auth(Role.DONOR, Role.ADMIN),
-  eventController.deleteevent
+  eventController.deleteEvent
 );
 
 export const eventRouter = router;

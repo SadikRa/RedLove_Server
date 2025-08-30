@@ -13,7 +13,6 @@ interface ICreateEvent {
 }
 
 const createEvent = async (data: ICreateEvent) => {
-    
   return await prisma.event.create({
     data: {
       title: data.title,
@@ -30,7 +29,7 @@ const createEvent = async (data: ICreateEvent) => {
 const getEvents = async () => {
   const events = await prisma.event.findMany({
     where: {},
-    orderBy: { createdAt: 'desc' },
+    orderBy: { createdAt: "desc" },
   });
 
   return events;
